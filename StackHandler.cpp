@@ -1,20 +1,140 @@
-// StackHandler.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <stack>
+#include <ctime>
+
+using namespace std;
+
+void fillStack(stack <int>* emptyStack)
+{
+    srand((int)time(0));
+
+    for (int index = 0; index < 20; index++)
+    {
+        int number = rand() % 19 - 9;
+        emptyStack->push(number);
+    }
+}
+
+void interateStack(stack <int> numbersStack)
+{
+    while (!numbersStack.empty())
+    {
+        int number = numbersStack.top();
+        cout << number << endl;
+        numbersStack.pop();
+    }
+}
+
+void removeEven(stack <int>* numbersSatack)
+{
+    stack <int> tempStack;
+
+    while (!numbersSatack->empty())
+    {
+        int number = numbersSatack->top();
+        if (number % 2 != 0) {
+            tempStack.push(number);
+        }
+        numbersSatack->pop();
+    }
+
+    while (!tempStack.empty())
+    {
+        numbersSatack->push(tempStack.top());
+        tempStack.pop();
+    }
+}
+
+void sort(stack <int>* numbersSatack)
+{
+    int size = numbersSatack->size();
+    stack <int> tempStack1;
+    while (!numbersSatack->empty())
+    {
+        tempStack1.push(numbersSatack->top());
+        numbersSatack->pop();
+    }
+
+    stack <int> tempStack2;
+
+    for (int index = 0; index < size; index++)
+    {
+        if (index % 2 == 0)
+        {
+            while (!tempStack1.empty())
+            {
+                int temp1 = tempStack1.top();
+                tempStack1.pop();
+
+                if (tempStack2.empty())
+                {
+                    tempStack2.push(temp1);
+                }
+                else
+                {
+                    int temp2 = tempStack2.top();
+                    if (temp2 > temp1)
+                    {
+                        tempStack2.pop();
+                        tempStack2.push(temp1);
+                        tempStack2.push(temp2);
+                    }
+                    else
+                    {
+                        tempStack2.push(temp1);
+                    }
+                }
+            }
+
+            numbersSatack->push(tempStack2.top());
+            tempStack2.pop();
+        }
+        else
+        {
+            while (!tempStack2.empty())
+            {
+                int temp1 = tempStack2.top();
+                tempStack2.pop();
+
+                if (tempStack1.empty())
+                {
+                    tempStack1.push(temp1);
+                }
+                else
+                {
+                    int temp2 = tempStack1.top();
+                    if (temp2 > temp1)
+                    {
+                        tempStack1.pop();
+                        tempStack1.push(temp1);
+                        tempStack1.push(temp2);
+                    }
+                    else
+                    {
+                        tempStack1.push(temp1);
+                    }
+                }
+            }
+
+            numbersSatack->push(tempStack1.top());
+            tempStack1.pop();
+        }
+    }
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    stack <int> numbersStack;
+    fillStack(&numbersStack);
+    interateStack(numbersStack);
+
+    cout << endl << "-----------------------------------------" << endl << endl;
+
+    sort(&numbersStack);
+    interateStack(numbersStack);
+
+    cout << endl << "-----------------------------------------" << endl << endl;
+
+    removeEven(&numbersStack);
+    interateStack(numbersStack);
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
